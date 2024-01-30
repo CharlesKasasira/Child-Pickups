@@ -8,7 +8,7 @@ Table A: Group Members
 | 1 | SSEMAKULA MARTIN | |
 | 2 | NAGABA NORMAN | |
 | 3 | KABOGGOZA RONNIE  | |
-| 4 | KASASIRA CHARLES DERRICK | |
+| 4 | KASASIRA CHARLES | |
 
 This is a mono repo for the Child-Pickups
 
