@@ -24,6 +24,10 @@ In this repo, you will find
 
 /model
 
+### Problem Statement
+Majority of schools lack an automated system that can save time and uniquely identify children, parents, and any other relevant transportation provider that can pick up these children. The current manual verification methods have resulted in unauthorized individuals gaining access to children.
+
+
 [Link to concept paper](https://childpickups.com)
 
 [Link to Report](https://childpickups.com)
