@@ -1,5 +1,7 @@
 # Child-Pickups
 
+![screenshot](assets/images/Detection-screen.jpg)
+
 Table A: Group Members
 | SNo. | Names | Role |
 | :--- | --- | --- |
