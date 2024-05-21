@@ -2,6 +2,9 @@ import cv2
 import numpy as np
 import os
 import sqlite3
+from django.db import connection
+from django.conf import settings
+import django
 
 faceDetect = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 cam = cv2.VideoCapture(0)
@@ -10,12 +13,22 @@ recognizer = cv2.face.LBPHFaceRecognizer_create()
 recognizer.read("recognizer/trainingdata.yml")
 
 
+# Set the settings module
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'child_pickup.settings')
+django.setup()
+
+
 def get_profile(id):
-    conn = sqlite3.connect("sqlite.db")
-    cursor = conn.execute("SELECT * FROM STUDENTS WHERE id=?", (id,))
-    profile = cursor.fetchone()  # Fetch only one row
-    conn.close()
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT * FROM face_recognition_userprofile WHERE user_id = %s", [id])
+        profile = cursor.fetchone()  # Fetch only one row
     return profile
+    # conn = sqlite3.connect("sqlite.db")
+    # # cursor = conn.execute("show tables;")
+    # cursor = conn.execute("SELECT * FROM face_recognition_userprofile WHERE id=?", (id,))
+    # profile = cursor.fetchone()  # Fetch only one row
+    # conn.close()
+    # return profile
 
 
 while True:

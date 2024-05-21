@@ -1,0 +1,8 @@
+db.sqlite3
+sqlite3.db
+sqlite.db
+venv
+face_recognition/migrations
+children_management/migrations
+pickup_system/__pycache__
+pickup_system/db.sqlite3

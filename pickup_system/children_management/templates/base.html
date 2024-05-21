@@ -1,0 +1,63 @@
+{% load static %}
+ 
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Pickup System{% endblock %}</title>
+        {% block extra_css %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{% static 'img/childpickup_favicon.png' %}">
+        <link type="text/css" href="{% static 'css/base.css' %}" rel="stylesheet">
+        <script async src=" {% static 'js/opencv.js' %} " onload="openCvReady();"></script>
+        <script src=" {% static 'js/utils.js' %}"></script>
+    </head>
+    <body id="section">
+        <aside>
+            <a href="{%url 'dashboard' %}" class="side_logo">
+                <img src="{% static 'img/childpickup_logo.png' %}" width="50px" id="logo" alt="Logo">
+                <p>ChildPickup</p>
+            </a>
+            <div>
+                <ul class="menu">
+                    <li  {% if section == "dashboard" %} class="menu-item selected" {% else %} class="menu-item" {% endif %}>
+                        <a href="{% url 'dashboard' %}">Dashboard</a>
+                    </li>
+                    <li  {% if section == "list_children" %} class="menu-item selected" {% else %} class="menu-item" {% endif %}>
+                        <a href="{% url 'list_children' %}">Pupils</a>
+                    </li>
+                    <li  {% if section == "parents_list" %} class="menu-item selected" {% else %} class="menu-item" {% endif %}>
+                        <a href="{% url 'parents_list' %}">Parents</a>
+                    </li>
+                    <li  {% if section == "guardians_list" %} class="menu-item selected" {% else %} class="menu-item" {% endif %}>
+                        <a href="{% url 'guardians_list' %}">Guardians</a>
+                    </li>
+                    <li  {% if section == "drivers_list" %} class="menu-item selected" {% else %} class="menu-item" {% endif %}>
+                        <a href="{% url 'drivers_list' %}">Drivers</a>
+                    </li>
+                </ul>
+            </div>
+        </aside>
+        <main class="content">
+            <nav>
+                <div>
+                    <p>ChildPickup</p>
+                </div>
+
+                <div class="profile">
+                    <p class = "user-details">{{ request.user.username|upper }} </p>
+                    <p>\ Logout</p>
+                </div>
+            </nav>
+
+            <div id="main_content">
+                {% block content %}
+                {% endblock %}
+                <footer>
+                    <p>&copy; {% now "Y" %} Pickup System</p>
+                </footer>
+            </div>
+        </main>
+        <script src=" {% static 'js/script.js' %} "></script>
+    </body>
+</html>

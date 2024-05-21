@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    
+    <div class="heading">
+        <h1>Dashboard</h1>
+    </div>
+    
+    <div class="dashboard-card">
+        <a href="{% url 'register_child' %}" class="btn btn-primary">Register Child</a>
+        <a href="{% url 'search_child' %}" class="btn btn-primary">Search Child by Unique Number</a>
+        <a href="{% url 'register_parent' %}" class="btn btn-primary">Register Parent</a>
+        <a href="{% url 'register_guardian' %}" class="btn btn-primary">Register Guardian</a>
+        <a href="{% url 'register_driver' %}" class="btn btn-primary">Register Driver</a>
+    </div>
+{% endblock %}

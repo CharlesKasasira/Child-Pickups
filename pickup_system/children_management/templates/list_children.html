@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+
+    <div class="heading">
+        <h1>List of Children</h1>
+        <a href="{% url 'register_child' %}" class="btn btn-primary">Register Child</a>
+    </div>
+
+    {% if parents|length > 0 %}
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Gender</th>
+                <th>Child's Unique Number</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for child in children %}
+            <tr>
+                <td>{{ child.first_name }}</td>
+                <td>{{ child.last_name }}</td>
+                <td>{{ child.gender }}</td>
+                <td>{{ child.unique_number }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No Children available.</p>
+    {% endif %}
+{% endblock %}
