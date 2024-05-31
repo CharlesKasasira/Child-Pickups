@@ -9,23 +9,31 @@
         <a href="{% url 'register_child' %}" class="btn btn-primary">Register Child</a>
     </div>
 
-    {% if parents|length > 0 %}
+    {% if children|length > 0 %}
     <table>
         <thead>
             <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
+                <th>Name</th>
                 <th>Gender</th>
                 <th>Child's Unique Number</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             {% for child in children %}
             <tr>
-                <td>{{ child.first_name }}</td>
-                <td>{{ child.last_name }}</td>
+                <td>{{ child.first_name }} {{ child.last_name }}</td>
                 <td>{{ child.gender }}</td>
-                <td>{{ child.unique_number }}</td>
+                <td>{{ child.childs_unique_number }}</td>
+                <td>
+                    <button
+                        class="btn-icons"
+                        id="edit_ip_btn"
+                        onclick="editIP(' {{ child.id }} ', ' {{ child.first_name|escapejs }} ', ' {{ child.last_name|escapejs }} ')"
+                    >
+                        <img src="{% static 'icons/edit.svg' %}" />
+                    </button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>

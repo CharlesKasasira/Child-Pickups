@@ -13,6 +13,13 @@
         <script src=" {% static 'js/utils.js' %}"></script>
     </head>
     <body id="section">
+        {% if messages %}
+            <ul class="messages" id="msg">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><img class="toast-icons" src="{% static 'icons/'|add:message.tags|add:'.png' %}" />{{ message }}</li>
+            {% endfor %}
+            </ul>
+        {% endif %}
         <aside>
             <a href="{%url 'dashboard' %}" class="side_logo">
                 <img src="{% static 'img/childpickup_logo.png' %}" width="50px" id="logo" alt="Logo">
@@ -33,7 +40,7 @@
                         <a href="{% url 'guardians_list' %}">Guardians</a>
                     </li>
                     <li  {% if section == "drivers_list" %} class="menu-item selected" {% else %} class="menu-item" {% endif %}>
-                        <a href="{% url 'drivers_list' %}">Drivers</a>
+                        <a href="{% url 'drivers_list' %}">Transport Agent</a>
                     </li>
                 </ul>
             </div>

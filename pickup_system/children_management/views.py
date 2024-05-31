@@ -17,34 +17,98 @@ from django.conf import settings
 from django.contrib import messages
 
 def main_dashboard(request):
+    children = Child.objects.all()
+    parents = Parent.objects.all()
+    drivers = Driver.objects.all()
+    guardians= Guardian.objects.all()
     context = {
-         "section": "dashboard"
+         "section": "dashboard",
+         "number_of_children": len(children),
+         "number_of_parents": len(parents),
+         "number_of_drivers": len(drivers),
+         "number_of_guardians": len(guardians),
     }
     return render(request, 'dashboard.html', context)
+
+
+def register_driver(request):
+    if request.method == 'POST':
+        form = DriverForm(request.POST, request.FILES)
+        if form.is_valid():
+            driver = form.save(commit=False)
+            
+            # Process the captured face image
+            face_data_uri = request.POST.get('face_image')
+            if face_data_uri:
+                # Decode the base64 data URI
+                _, encoded_data = face_data_uri.split(',', 1)
+                decoded_data = base64.b64decode(encoded_data)
+                image = Image.open(BytesIO(decoded_data))
+                
+                # Save the image to the appropriate location
+                image_path = f'driver_faces/{driver.childs_unique_number}.png'
+                image_full_path = os.path.join(settings.MEDIA_ROOT, image_path)
+                image.save(image_full_path)
+                
+                # Update the driver object with the image path
+                driver.face_image = image_path
+            
+            # Process the uploaded passport
+            national_idcard = request.FILES.get('national_idcard')
+            if national_idcard:
+                driver.national_idcard = national_idcard
+            
+            driver.save()
+            messages.success(request, "Driver successfully registered")
+            return HttpResponseRedirect('/drivers/')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                     messages.error(request, f"{error}")
+    else:
+        form = DriverForm()
+        context = {
+         "section": "drivers_list",
+         'form': form
+        }
+        return render(request, 'register_driver.html', context=context)
+    return render(request, 'register_driver.html', {"section": "drivers_list",})
+
 
 def register_child(request):
     if request.method == 'POST':
         form = ChildForm(request.POST, request.FILES)
-        print(form)
         if form.is_valid():
-            # Extract the image data and birth certificate from the request
-            image_data = request.POST.get('face_image')
-            birth_certificate = request.FILES.get('birth_certificate')  # Extract birth certificate file
-            if image_data:
-                format, imgstr = image_data.split(';base64,')
-                ext = format.split('/')[-1]
-                data = BytesIO(base64.b64decode(imgstr))
-                image = Image.open(data)
-                child = form.save(commit=False)
-                child.face_image.save(f'child_face.{ext}', image)
-                if birth_certificate:
-                    child.birth_certificate = birth_certificate  # Save birth certificate file
-                child.save()
-                return HttpResponse('Child registered successfully!')
-            else:
-                return HttpResponse('Error: Face image not captured!')
+            child = form.save(commit=False)
+            
+            # Process the captured face image
+            face_data_uri = request.POST.get('face_image')
+            if face_data_uri:
+                # Decode the base64 data URI
+                _, encoded_data = face_data_uri.split(',', 1)
+                decoded_data = base64.b64decode(encoded_data)
+                image = Image.open(BytesIO(decoded_data))
+                
+                # Save the image to the appropriate location
+                image_path = f'child_faces/{child.childs_unique_number}.png'
+                image_full_path = os.path.join(settings.MEDIA_ROOT, image_path)
+                image.save(image_full_path)
+                
+                # Update the child object with the image path
+                child.face_image = image_path
+            
+            # Process the uploaded passport
+            # national_idcard = request.FILES.get('national_idcard')
+            # if national_idcard:
+            #     child.national_idcard = national_idcard
+            
+            child.save()
+            messages.success(request, "Child successfully registered")
+            return HttpResponseRedirect('/list_children/')
         else:
-            return render(request, 'register_child.html', {'form': form})
+            for field, errors in form.errors.items():
+                for error in errors:
+                     messages.error(request, f"{error} {field}")
     else:
         form = ChildForm()
         context = {
@@ -52,6 +116,37 @@ def register_child(request):
          'form': form
         }
         return render(request, 'register_child.html', context)
+    return render(request, 'register_child.html', {"section": "list_children",})
+
+    # if request.method == 'POST':
+    #     form = ChildForm(request.POST, request.FILES)
+    #     print(form)
+    #     if form.is_valid():
+    #         # Extract the image data and birth certificate from the request
+    #         image_data = request.POST.get('face_image')
+    #         birth_certificate = request.FILES.get('birth_certificate')  # Extract birth certificate file
+    #         if image_data:
+    #             format, imgstr = image_data.split(';base64,')
+    #             ext = format.split('/')[-1]
+    #             data = BytesIO(base64.b64decode(imgstr))
+    #             image = Image.open(data)
+    #             child = form.save(commit=False)
+    #             child.face_image.save(f'child_face.{ext}', image)
+    #             if birth_certificate:
+    #                 child.birth_certificate = birth_certificate  # Save birth certificate file
+    #             child.save()
+    #             return HttpResponse('Child registered successfully!')
+    #         else:
+    #             return HttpResponse('Error: Face image not captured!')
+    #     else:
+    #         return render(request, 'register_child.html', {'form': form})
+    # else:
+    #     form = ChildForm()
+    #     context = {
+    #      "section": "list_children",
+    #      'form': form
+    #     }
+    #     return render(request, 'register_child.html', context)
 
 
 def register_parent(request):
@@ -82,7 +177,8 @@ def register_parent(request):
                 parent.passport = passport
             
             parent.save()
-            return HttpResponse('Parent registered successfully!')
+            messages.success(request, "Parent successfully registered")
+            return HttpResponseRedirect('/parents/')
     else:
         form = ParentForm()
         context = {
@@ -119,7 +215,8 @@ def register_guardian(request):
                 guardian.national_idcard = national_idcard
             
             guardian.save()
-            return HttpResponse('Guardian registered successfully!')
+            messages.success(request, "Guardian successfully registered")
+            return HttpResponseRedirect('/guardians/')
     else:
         form = GuardianForm()
         context = {
@@ -127,50 +224,6 @@ def register_guardian(request):
          'form': form
         }
     return render(request, 'register_guardian.html', context)
-
-
-def register_driver(request):
-    if request.method == 'POST':
-        form = DriverForm(request.POST, request.FILES)
-        if form.is_valid():
-            driver = form.save(commit=False)
-            
-            # Process the captured face image
-            face_data_uri = request.POST.get('face_image')
-            if face_data_uri:
-                # Decode the base64 data URI
-                _, encoded_data = face_data_uri.split(',', 1)
-                decoded_data = base64.b64decode(encoded_data)
-                image = Image.open(BytesIO(decoded_data))
-                
-                # Save the image to the appropriate location
-                image_path = f'driver_faces/{driver.childs_unique_number}.png'
-                image_full_path = os.path.join(settings.MEDIA_ROOT, image_path)
-                image.save(image_full_path)
-                
-                # Update the driver object with the image path
-                driver.face_image = image_path
-            
-            # Process the uploaded passport
-            national_idcard = request.FILES.get('national_idcard')
-            if national_idcard:
-                driver.national_idcard = national_idcard
-            
-            driver.save()
-            messages.success(request, "Driver successfully registered")
-            return HttpResponseRedirect('/')
-        else:
-            for field, errors in form.errors.items():
-                for error in errors:
-                     messages.error(request, f"{error}")
-    else:
-        form = DriverForm()
-        context = {
-         "section": "drivers_list",
-         'form': form
-        }
-        return render(request, 'register_driver.html', context=context)
-    return render(request, 'register_driver.html', {"section": "drivers_list",})
 
     
     
@@ -187,8 +240,7 @@ def search_child(request):
         return render(request, 'search_child.html')
     
 def list_children(request):
-    children = Child.objects.all()  # Get all children from the database
-    print(children)
+    children = Child.objects.all()
     context = {
          "section": "list_children",
          'children': children

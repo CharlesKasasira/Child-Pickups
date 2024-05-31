@@ -41,18 +41,24 @@ class Driver(models.Model):
     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
 
 class Child(models.Model):
-     GENDER_CHOICES = [
+    GENDER_CHOICES = [
         ('male', 'Male'),
         ('female', 'Female'),
     ]
-     first_name = models.CharField(max_length=100)
-     last_name = models.CharField(max_length=100, blank=True, null=True)
-     birth_certificate = models.ImageField(upload_to='birth_certificates/', blank=True, null=True)
-     childs_unique_number = models.CharField(max_length=100, unique=True)
-     face_image = models.ImageField(upload_to='child_faces/')
-     classroom_number = models.CharField(max_length=100)
-     block_name = models.CharField(max_length=100)
-     parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, blank=True, null=True)
-     guardian = models.ForeignKey(Guardian, on_delete=models.SET_NULL, blank=True, null=True)
-     driver = models.ForeignKey(Driver, on_delete=models.SET_NULL, blank=True, null=True)
-     gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100, blank=True, null=True)
+    birth_certificate = models.ImageField(upload_to='birth_certificates/', blank=True, null=True)
+    childs_unique_number = models.CharField(max_length=100, unique=True)
+    face_image = models.ImageField(upload_to='child_faces/', blank=True, null=True)
+    classroom_number = models.CharField(max_length=100)
+    block_name = models.CharField(max_length=100)
+    parent = models.CharField(max_length=100, blank=True, null=True)
+    guardian = models.CharField(max_length=100, blank=True, null=True)
+    driver = models.CharField(max_length=100, blank=True, null=True)
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+
+
+
+# parent = models.ForeignKey(Parent, on_delete=models.SET_NULL, blank=True, null=True)
+    # guardian = models.ForeignKey(Guardian, on_delete=models.SET_NULL, blank=True, null=True)
+    # driver = models.ForeignKey(Driver, on_delete=models.SET_NULL, blank=True, null=True)

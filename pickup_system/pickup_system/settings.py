@@ -53,10 +53,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'pickup_system.wsgi.application'
 
-# DATABASES = {
-#     'default': {
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres.hmztmelqhqsooxziulqd',
+        'PASSWORD': 'dbpassword#2024#childPickUp',
+        'HOST': 'aws-0-us-east-1.pooler.supabase.com',
+        'PORT': '5432',
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {

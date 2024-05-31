@@ -16,13 +16,13 @@
         <h1>Registered Drivers</h1>
         <a href="{% url 'register_driver' %}" class="btn btn-primary">Register Driver</a>
     </div>
+
+    {% if drivers|length > 0 %}
     <table>
         <thead>
             <tr>
-                <th>First Name</th>
-                <th>Last Name</th>
+                <th>Name</th>
                 <th>Phone Number</th>
-                <th>Address</th>
                 <th>Gender</th>
                 <th>Child's Unique Number</th>
                 <th>national_idcard</th>
@@ -32,10 +32,8 @@
         <tbody>
             {% for driver in drivers %}
             <tr>
-                <td>{{ driver.first_name }}</td>
-                <td>{{ driver.last_name }}</td>
+                <td>{{ driver.first_name }} {{ driver.last_name }}</td>
                 <td>{{ driver.phone_number }}</td>
-                <td>{{ driver.address }}</td>
                 <td>{{ driver.gender }}</td>
                 <td>{{ driver.childs_unique_number }}</td>
                 <td>
@@ -56,4 +54,9 @@
             {% endfor %}
         </tbody>
     </table>
+    {% else %}
+        <p>No Transport Agents available.</p>
+    {% endif %}
+
+
 {% endblock %}

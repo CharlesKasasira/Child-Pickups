@@ -5,7 +5,7 @@
     <h1>Register New Child</h1>
 </div>
 
-<form id="registration_form" method="post" action="{% url 'register_child' %}" enctype="multipart/form-data">
+<form id="registration_form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="input-fields">
         <label for="">First Name</label>
@@ -69,6 +69,11 @@
         </div>
     </div>
 
+    <!-- Webcam display -->
+    <video id="video" style="width: 100%; max-width: 400px; margin-bottom: 10px;" autoplay></video><br>
+    <canvas id="canvas" style="display: none;"></canvas>
+    <img id="captured_image" style="max-width: 400px;">
+
     <input type="button" onclick="captureFace()" class="btn btn-primary" value="Capture Face" >
 
     <div class="input-fields">
@@ -80,7 +85,6 @@
             placeholder="Classroom Number"
             name="classroom_number"
             id="classroom_number"
-            minlength="3"
             required
             />
         </div>
@@ -105,26 +109,23 @@
 </form>
 
 <script>
-function captureFace() {
-    // Get references to video, canvas, and capture button
-    const video = document.createElement('video');
-    const canvas = document.createElement('canvas');
-    const captureBtn = document.createElement('button');
-    captureBtn.textContent = 'Capture Image';
+    function captureFace() {
+        // Get references to video, canvas, and capture button
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const capturedImage = document.getElementById('captured_image');
 
-    // Add styles to the video element
-    video.style.width = '100%';
-    video.style.maxWidth = '400px';
-    video.style.marginBottom = '10px';
-
-    // Add event listener to the capture button
-    captureBtn.addEventListener('click', function() {
         // Draw the current frame from the video onto the canvas
         const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         // Convert the canvas content to a data URL representing a PNG image
         const imageData = canvas.toDataURL('image/png');
+
+        // Set the captured image source to display
+        capturedImage.src = imageData;
 
         // Create a hidden input element to store the captured image data
         const input = document.createElement('input');
@@ -134,23 +135,15 @@ function captureFace() {
 
         // Append the hidden input element to the form
         document.getElementById('registration_form').appendChild(input);
-        
-        // Optional: You can append the canvas to the document or perform other actions with it
-        document.body.appendChild(canvas);
-    });
+    }
 
     // Request access to the user's webcam
     navigator.mediaDevices.getUserMedia({ video: true })
-        .then(function(stream) {
+        .then(function (stream) {
             video.srcObject = stream;
         })
-        .catch(function(error) {
+        .catch(function (error) {
             console.error('Error accessing webcam:', error);
         });
-
-    // Append the video element and capture button to the form
-    document.getElementById('registration_form').appendChild(video);
-    document.getElementById('registration_form').appendChild(captureBtn);
-}
 </script>
 {% endblock %}
