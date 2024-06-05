@@ -191,7 +191,7 @@
                 <h3><i class="fas fa-users bg-light-purple"></i></h3>
                 <div class="text-right">
                     Guardians
-                    <p>{{ number_of_drivers }}</p>
+                    <p>{{ number_of_guardians }}</p>
                 </div>
             </div>
         </div>
@@ -200,7 +200,7 @@
                 <h3><i class="fas fa-users bg-light-red"></i></h3>
                 <div class="text-right">
                     Transport Agents
-                    <p>{{ number_of_guardians }}</p>
+                    <p>{{ number_of_drivers }}</p>
                 </div>
             </div>
         </div>
@@ -213,14 +213,6 @@
                 <canvas id="traffic"></canvas>
             </div>
         </div>
-    </div>
-
-    <div class="dashboard-card">
-        <a href="{% url 'register_child' %}" class="btn btn-primary">Register Child</a>
-        <a href="{% url 'search_child' %}" class="btn btn-primary">Search Child by Unique Number</a>
-        <a href="{% url 'register_parent' %}" class="btn btn-primary">Register Parent</a>
-        <a href="{% url 'register_guardian' %}" class="btn btn-primary">Register Guardian</a>
-        <a href="{% url 'register_driver' %}" class="btn btn-primary">Register Driver</a>
     </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

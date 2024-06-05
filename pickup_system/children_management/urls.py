@@ -6,13 +6,16 @@ from .views import register_driver
 from .views import drivers_list
 from .views import register_child
 from .views import parents_list
-from .views import guardians_list
+from .views import guardians_list, sendSMS, login_view, logout_user
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.main_dashboard, name='dashboard'),
+    path('login', login_view, name='login'),
+    path('logout', logout_user, name='logout'),
     path('register/child/', register_child, name='register_child'),
+    path('message/parent/', sendSMS, name='message_parent'),
     path('register/parent/', register_parent, name='register_parent'),
     path('register/driver/', register_driver, name='register_driver'),
     path('drivers/', drivers_list, name='drivers_list'),

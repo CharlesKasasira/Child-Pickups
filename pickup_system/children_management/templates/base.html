@@ -16,7 +16,7 @@
         {% if messages %}
             <ul class="messages" id="msg">
             {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><img class="toast-icons" src="{% static 'icons/'|add:message.tags|add:'.png' %}" />{{ message }}</li>
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}><img class="toast-icons" src="{% static 'icons/'|add:message.tags|add:'.png' %}" />{{ message }}</li>
             {% endfor %}
             </ul>
         {% endif %}
@@ -45,7 +45,8 @@
                 </ul>
             </div>
         </aside>
-        <main class="content">
+        <main  class="content">
+            {% if request.user.is_authenticated %}
             <nav>
                 <div>
                     <p>ChildPickup</p>
@@ -53,11 +54,12 @@
 
                 <div class="profile">
                     <p class = "user-details">{{ request.user.username|upper }} </p>
-                    <p>\ Logout</p>
+                    <a href="{% url 'logout' %}" id="logout">\ Logout</a>
                 </div>
             </nav>
+            {% endif %}
 
-            <div id="main_content">
+            <div {% if request.user.is_authenticated %} id="main_content" {% else %} id="auto_content" {% endif %}>
                 {% block content %}
                 {% endblock %}
                 <footer>

@@ -161,6 +161,7 @@
   
   .input-fields {
     margin-bottom: 16px;
+    width: 100%;
   }
   
   .input-fields-user {
@@ -288,6 +289,11 @@
     box-shadow: none;
     text-shadow: none;
   }
+
+  #logout {
+    cursor: pointer;
+    color: #000;
+  }
   
   .toast-icons {
     width: 25px;
@@ -300,7 +306,7 @@
   /* login styles */
   .login-form-container {
     width: 100vw;
-    min-height: 100vh;
+    height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -334,7 +340,7 @@
     background-color: transparent;
     padding: 8px 12px;
     height: 35px;
-    width: 300px;
+    /* width: 300px; */
   }
   
   .btn {

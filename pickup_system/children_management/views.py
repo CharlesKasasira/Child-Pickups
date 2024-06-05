@@ -15,7 +15,23 @@ import base64
 from io import BytesIO
 from django.conf import settings
 from django.contrib import messages
+import africastalking
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout, login
+from django.contrib.auth.forms import AuthenticationForm
 
+username = "childpickup"    # use 'sandbox' for development in the test environment
+api_key = "510845c968098e21260698ee55cdba8ef4bb7f4a1125e5e7fba46c52ecfffa36"      # use your sandbox app API key for development in the test environment
+africastalking.initialize(username, api_key)
+
+sms = africastalking.SMS
+
+@login_required(login_url='login')
+def sendSMS(request):
+    response = sms.send("Hello Message!", ["+256750118523"])
+    print(response)
+
+@login_required(login_url='login')
 def main_dashboard(request):
     children = Child.objects.all()
     parents = Parent.objects.all()
@@ -270,3 +286,25 @@ def guardians_list(request):
          'guardians': guardians
     }
     return render(request, 'guardians_list.html', context)
+
+
+def login_view(request):
+     if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            messages.success(request, "Successfully logged in")
+            return HttpResponseRedirect('/')
+        else:
+            return HttpResponseRedirect('/login')
+
+     form = AuthenticationForm()
+     return render(request, 'login.html', {'form': form})
+
+
+@login_required(login_url='login')
+def logout_user(request):
+    logout(request)
+    messages.success(request, "Successfully logged out")
+    return HttpResponseRedirect('/')

@@ -1,5 +1,4 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block content %}
 
@@ -54,8 +53,12 @@
             </div>
         </div>
 
-        <label for="passport">Passport:</label>
-        <input type="file" id="passport" name="passport"><br><br>
+        <div class="input-fields">
+            <label for="">Passport</label>
+            <div>
+                <input type="file" id="passport" name="passport">
+            </div>
+        </div>
 
         <div class="input-fields">
             <label for="">Address</label>
@@ -84,19 +87,42 @@
 
         <!-- Webcam display -->
         <!-- <video id="video" style="width: 100%; max-width: 400px; margin-bottom: 10px;" autoplay></video><br>
-        <canvas id="canvas" style="display: none;"></canvas> <!-- Add a canvas element to capture the image -->
-        <!-- <img id="captured_image" style="max-width: 400px;"> Add an img tag to display the captured image --> -->
+        <canvas id="canvas" style="display: none;"></canvas> -->
+        <!-- Add a canvas element to capture the image -->
+        <!-- <img id="captured_image" style="max-width: 400px;"> Add an img tag to display the captured image -->
 
         <!-- Replace Face Image input with Capture Face button -->
-        <input type="button" onclick="captureFace()" class="btn btn-primary" value="Capture Face">
+        <!-- <input type="button" onclick="captureFace()" class="btn btn-primary" value="Capture Face"> -->
 
-        <label for="childs_unique_number">Child's Unique Number:</label>
-        <input type="text" id="childs_unique_number" name="childs_unique_number" required><br><br>
+        <!-- <video id="cam_input" height="480" width="640"></video>
+        <canvas id="canvas_output"></canvas> -->
+
+        <!-- Webcam display -->
+        <video id="video" style="width: 100%; max-width: 400px; margin-bottom: 10px;" autoplay></video><br>
+        <canvas id="canvas" style="display: none;"></canvas> <!-- Add a canvas element to capture the image -->
+        <img id="captured_image" style="max-width: 400px;"> <!-- Add an img tag to display the captured image -->
+
+        <!-- Replace Face Image input with Capture Face button -->
+        <div class="input-fields">
+            <button type="button" onclick="captureFace()" class="btn btn-primary">Capture Face</button><br><br>
+        </div>
+
+
+        <div class="input-fields">
+            <label for="">Child's Unique Number</label>
+            <div>
+                <input
+                type="text"
+                class="form-control"
+                placeholder="Unique Number"
+                name="childs_unique_number"
+                id="childs_unique_number"
+                required
+                />
+            </div>
+        </div>
 
         <input type="submit" value="Register Guardian" class="btn btn-primary">
-
-        <video id="cam_input" height="480" width="640"></video>
-        <canvas id="canvas_output"></canvas>
 
     </form>
 
