@@ -21,7 +21,7 @@ from django.contrib.auth import logout, login
 from django.contrib.auth.forms import AuthenticationForm
 
 username = "childpickup"    # use 'sandbox' for development in the test environment
-api_key = "510845c968098e21260698ee55cdba8ef4bb7f4a1125e5e7fba46c52ecfffa36"      # use your sandbox app API key for development in the test environment
+api_key = ""      # use your sandbox app API key for development in the test environment
 africastalking.initialize(username, api_key)
 
 sms = africastalking.SMS
