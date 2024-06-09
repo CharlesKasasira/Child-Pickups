@@ -28,7 +28,7 @@ sms = africastalking.SMS
 
 @login_required(login_url='login')
 def sendSMS(request):
-    response = sms.send("Hello Message!", ["+256750118523"])
+    response = sms.send("Hello Martin, You child is being pickedup.", ["+256750118523", "+256700492024"])
     print(response)
 
 @login_required(login_url='login')
