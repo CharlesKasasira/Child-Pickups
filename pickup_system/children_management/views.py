@@ -19,6 +19,8 @@ import africastalking
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login
 from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Child
 
 username = "childpickup"    # use 'sandbox' for development in the test environment
 api_key = ""      # use your sandbox app API key for development in the test environment
@@ -308,3 +310,52 @@ def logout_user(request):
     logout(request)
     messages.success(request, "Successfully logged out")
     return HttpResponseRedirect('/')
+def delete_guardian(request, pk):
+    if request.method == 'POST':
+        guardian = get_object_or_404(Guardian, pk=pk)
+        guardian.delete()
+        messages.success(request, 'Guardian deleted successfully.')
+    return redirect('guardians_list')
+
+def edit_parent(request, pk):
+    parent = get_object_or_404(Parent, pk=pk)
+    if request.method == 'POST':
+        form = ParentForm(request.POST, request.FILES, instance=parent)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Parent information updated successfully.')
+            return redirect('parents_list')
+        else:
+            messages.error(request, 'Failed to update parent information. Please check the provided data.')
+    else:
+        form = ParentForm(instance=parent)
+    return render(request, 'edit_parent.html', {'form': form, 'parent': parent})
+
+def delete_parent(request, pk):
+    if request.method == 'POST':
+        parent = get_object_or_404(Parent, pk=pk)
+        parent.delete()
+        messages.success(request, 'Parent deleted successfully.')
+    return redirect('parents_list')
+
+def edit_child(request, pk):
+    child = get_object_or_404(Child, pk=pk)
+    if request.method == 'POST':
+        # Process form submission
+        form = ChildForm(request.POST, instance=child)
+        if form.is_valid():
+            form.save()
+            return redirect('list_children')
+    else:
+        # Render edit form
+        form = ChildForm(instance=child)
+    context = {'form': form}
+    return render(request, 'edit_child.html', context)
+
+def delete_child(request, pk):
+    child = get_object_or_404(Child, pk=pk)
+    if request.method == 'POST':
+        child.delete()
+        return redirect('list_children')
+    context = {'child': child}
+    return render(request, 'delete_child.html', context)
