@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Registered Drivers{% endblock %}
+
+{% block content %}
+    <style>
+        /* CSS for adjusting image sizes */
+        .national_idcard-image, .face-image {
+            max-width: 100px;
+            height: auto;
+        }
+    </style>
+
+    <div class="heading">
+        <h1>Registered Drivers</h1>
+        <a href="{% url 'register_driver' %}" class="btn btn-primary">Register Driver</a>
+    </div>
+
+    {% if drivers|length > 0 %}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Gender</th>
+                <th>Child's Unique Number</th>
+                <th>national_idcard</th>
+                <th>Face Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for driver in drivers %}
+            <tr>
+                <td>{{ driver.first_name }} {{ driver.last_name }}</td>
+                <td>{{ driver.phone_number }}</td>
+                <td>{{ driver.gender }}</td>
+                <td>{{ driver.childs_unique_number }}</td>
+                <td>
+                    {% if driver.national_idcard %}
+                        <img class="national_idcard-image" src="{{ driver.national_idcard.url }}" alt="national_idcard">
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if driver.face_image %}
+                        <img class="face-image" src="{{ driver.face_image.url }}" alt="Face Image">
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No Transport Agents available.</p>
+    {% endif %}
+
+
+{% endblock %}

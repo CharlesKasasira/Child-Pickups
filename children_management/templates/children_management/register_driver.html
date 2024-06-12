@@ -1,0 +1,82 @@
+{% extends 'children_management/base.html' %}
+
+{% block title %}Register Driver{% endblock %}
+
+{% block content %}
+<h1>Register Driver</h1>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div>
+        <label for="driver_id">Driver ID:</label>
+        <input type="text" id="driver_id" name="driver_id" value="{{ driver_id }}" readonly>
+    </div><br>
+    <button type="button" id="capture-face-image" class="btn btn-primary">Capture Face for Storage</button>
+    <input type="hidden" name="face_image" id="face_image">
+    <br>
+    <button type="button" id="capture-face-train ">Tap on Submit to Capture Face for Training</button>
+    <br>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<div id="camera"></div>
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+document.getElementById('capture-face-image').addEventListener('click', function() {
+    captureFace('face_image');
+});
+
+document.getElementById('capture-face-train').addEventListener('click', function() {
+    const driverId = document.getElementById('driver_id').value;
+    if (driverId) {
+        captureAndTrainFace(driverId);
+    } else {
+        alert('Please submit the form to get a valid driver ID.');
+    }
+});
+
+function captureFace(inputId) {
+    const video = document.createElement('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const cameraDiv = document.getElementById('camera');
+    cameraDiv.innerHTML = '';
+    cameraDiv.appendChild(video);
+
+    // Set canvas dimensions to match video dimensions
+    video.addEventListener('loadedmetadata', () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+    });
+
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+        video.srcObject = stream;
+        video.play();
+
+        video.addEventListener('click', () => {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/png');
+            document.getElementById(inputId).value = dataUrl;
+            stream.getTracks().forEach(track => track.stop());
+            cameraDiv.innerHTML = 'Captured face image';
+        });
+    }).catch(err => {
+        console.error("Error accessing the camera: ", err);
+    });
+}
+
+function captureAndTrainFace(driverId) {
+    fetch(`/capture_and_train/${driverId}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'Training completed') {
+                alert('Face training completed');y
+            } else {
+                alert('Error: ' + data.error);
+            }
+        }).catch(err => {
+            console.error("Error during face training: ", err);
+        });
+}
+</script>
+{% endblock %}

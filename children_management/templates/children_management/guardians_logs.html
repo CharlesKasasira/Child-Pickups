@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Guardians Logs</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to get the CSRF token from the cookie
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    
+        $(document).ready(function() {
+            const csrftoken = getCookie('csrftoken');
+    
+            $('.pickup-checkbox').change(function() {
+                const logId = $(this).data('log-id');
+                const checkbox = $(this);
+                $.ajax({
+                    url: `/update_pickup_status/${logId}/`,
+                    type: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    success: function(response) {
+                        if (response.child_picked) {
+                            const pickupTime = new Date(response.pickup_time);
+                            const formattedTime = pickupTime.toLocaleString('en-US', {
+                                year: 'numeric',
+                                month: '2-digit',
+                                day: '2-digit',
+                                hour: 'numeric',
+                                minute: 'numeric',
+                                second: 'numeric',
+                                hour12: true
+                            });
+                            checkbox.next('.pickup-status').text('Child Picked at ' + formattedTime);
+                        } else {
+                            checkbox.next('.pickup-status').text('Child Not Yet Picked');
+                        }
+                    },
+                    error: function() {
+                        alert('Error updating status.');
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #C0C0C0;
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .pickup-checkbox {
+        }
+        
+        .pickup-status {
+            font-style: italic;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Guardians Logs</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Face Image</th>
+                    <th>Guardian Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Child's Unique Number</th>
+                    <th>Recognized Time</th>
+                    <th>Pickup Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in recent_logs %}
+                    <tr>
+                        <td><img src="{{ log.guardian.face_image.url }}" alt="Face Image" style="max-width: 100px; max-height: 100px;"></td>
+                        <td>{{ log.guardian.first_name }} {{ log.guardian.last_name }}</td>
+                        <td>{{ log.guardian.email }}</td>
+                        <td>{{ log.guardian.phone_number }}</td>
+                        <td>{{ log.guardian.address }}</td>
+                        <td>{{ log.guardian.childs_unique_number }}</td>
+                        <td>{{ log.recognition_time }}</td>
+                        <td>
+                            <span class="pickup-status">
+                                {% if log.child_picked %}
+                                    Child Picked at {{ log.pickup_time }}
+                                {% else %}
+                                    Child Not Yet Picked
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td>
+                            <input type="checkbox" class="pickup-checkbox" data-log-id="{{ log.id }}" {% if log.child_picked %}checked{% endif %}>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

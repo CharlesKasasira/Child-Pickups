@@ -1,0 +1,321 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<style>
+	.chart-wrap {
+		position: relative;
+		padding: 1rem;
+		transition: .5s;
+		background-color: #fff;
+		border-radius: 10px;
+	}
+
+	.fa-expand-alt {
+		display: none;
+		position: absolute;
+		top: .5rem;
+		right: .5rem;
+		padding: .5rem;
+		cursor: pointer;
+		transition: .3s;
+	}
+
+	.fa-expand-alt:hover {
+		background-color: #f1f1f1;
+	}
+
+	.chart-wrap:hover {
+		box-shadow: 0 0 0 1px inset #666;
+	}
+
+	.chart-wrap:hover .fa-expand-alt {
+		display: block;
+	}
+
+	.full-screen {
+		transform: translateY(100%);
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 999;
+		max-width: 100%;
+		max-height: 100%;
+		-ms-flex: 0 0 100%;
+		flex: 0 0 100%;
+		background-color: #fff;
+		/* For Internet Explorer */
+		box-shadow: 0 0 0 10000px rgba(0, 0, 0, 0.5) !important;
+		/* For other browsers */
+		box-shadow: 0 0 0 100vmax rgba(0, 0, 0, 0.5) !important;
+		transform-origin: bottom left;
+		animation: popupAnim forwards alternate .5s ease-in-out;
+		overflow: auto;
+	}
+
+	.full-screen .fa-expand-alt {
+		display: block;
+	}
+
+	@keyframes popupAnim {
+		from {
+			transform: translateY(100%);
+		}
+
+		to {
+			transform: translateY(0);
+		}
+	}
+
+	.users-count .card-count {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background-color: #fff;
+	}
+
+	.users-count .card-count h2 {
+		font-weight: 1000;
+	}
+
+	.users-count .card-count h3 {
+		flex: 0 0 40%;
+		border-right: 1px solid rgb(230, 230, 230);
+	}
+
+	.users-count .card-count h3 i {
+		display: inline-flex;
+		width: 60px;
+		height: 60px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+	}
+
+	.bg-light-aqua {
+		background-color: rgba(32, 177, 177, 0.8);
+		box-shadow: 0 0 0 10px rgba(32, 177, 177, 0.2);
+		color: #fff;
+	}
+
+	.bg-light-orange {
+		background-color: rgba(253, 174, 28, 0.8);
+		box-shadow: 0 0 0 10px rgba(253, 174, 28, 0.2);
+		color: #fff;
+	}
+
+	.bg-light-purple {
+		background-color: rgba(203, 31, 255, 0.8);
+		box-shadow: 0 0 0 10px rgba(203, 31, 255, 0.2);
+		color: #fff;
+	}
+
+	.bg-light-red {
+		background-color: rgba(255, 19, 157, 0.8);
+		box-shadow: 0 0 0 10px rgba(255, 19, 157, 0.2);
+		color: #fff;
+	}
+
+	.activities ul {
+		padding-left: .5rem;
+	}
+
+	.activities ul li {
+		list-style-type: disc;
+	}
+
+    .dashboard-cards {
+        display: flex;
+        gap: 10px;
+        width: 100%;
+        justify-content: space-between;
+        margin-bottom: 30px;
+    }
+
+    .dashboard-cards .card {
+        width: 100%;
+        overflow: hidden;
+        padding: 10px;
+        background-color: #fff;
+    }
+
+    .card-count {
+        padding: 10px;
+        display: flex;
+        gap: 5px;
+    }
+
+    .card-count div {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 0;
+    }
+
+    .card-count p {
+        font-size: 1.3rem;
+        font-weight: 500;
+    }
+</style>
+    
+    <div class="heading">
+        <h1>Dashboard</h1>
+    </div>
+
+    <div class="row users-count px-3 dashboard-cards">
+        <div class="col-md-3 mb-3 px-2 card">
+            <div class="card-count">
+                <h3><i class="fas fa-users bg-light-aqua"></i></h3>
+                <div class="">
+                    Pupils
+                    <p>{{ number_of_children }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 px-2 card">
+            <div class="card-count p-3">
+                <h3><i class="fas fa-users bg-light-orange"></i></h3>
+                <div class="text-right">
+                    Parents
+                    <p>{{ number_of_parents }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 px-2 card">
+            <div class="card-count p-3">
+                <h3><i class="fas fa-users bg-light-purple"></i></h3>
+                <div class="text-right">
+                    Guardians
+                    <p>{{ number_of_guardians }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3 px-2 card">
+            <div class="card-count p-3">
+                <h3><i class="fas fa-users bg-light-red"></i></h3>
+                <div class="text-right">
+                    Transport Agents
+                    <p>{{ number_of_drivers }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row px-2">
+        <div class="col-md-6 p-2">
+            <div class="chart-wrap">
+                <i class="fas fa-expand-alt"></i>
+                <canvas id="traffic"></canvas>
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Setup
+		const labels = [
+			'January',
+			'February',
+			'March',
+			'April',
+			'May',
+			'June',
+		];
+		const data = {
+			labels: labels,
+			datasets: [{
+				label: 'Pupils',
+				backgroundColor: 'rgba(86, 224, 224, 0.5)',
+				borderColor: 'rgb(86, 224, 224)',
+				hoverBorderWidth: 3,
+				data: [0, 10, 5, 2, 20, 30, 45]
+			}, {
+				label: 'Parents',
+				backgroundColor: 'rgba(253, 174, 28, 0.5)',
+				borderColor: 'rgb(253, 174, 28)',
+				hoverBorderWidth: 3,
+				data: [20, 0, 15, 4, 6, 4, 60],
+			}, {
+				label: 'Guardians',
+				backgroundColor: 'rgba(203, 31, 255, 0.5)',
+				borderColor: 'rgb(203, 31, 255)',
+				hoverBorderWidth: 3,
+				data: [85, 30, 34, 20, 20, 55, 45],
+			}, {
+				label: 'Transport Agents',
+				backgroundColor: 'rgba(255, 19, 157, 0.5)',
+				borderColor: 'rgb(255, 19, 157)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}, {
+				label: "Recognize Transport Agent's Faces",
+				backgroundColor: 'rgba(255, 19, 157, 0.5)',
+				borderColor: 'rgb(255, 19, 157)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}, {
+				label: "Recognize Children's Faces",
+				backgroundColor: 'rgba(255, 19, 157, 0.5)',
+				borderColor: 'rgb(255, 19, 157)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}, {
+				label: "Recognize Parents's Faces",
+				backgroundColor: 'rgba(255, 19, 157, 0.5)',
+				borderColor: 'rgb(255, 19, 157)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}, {
+				label: "Recognize Guardians's Faces",
+				backgroundColor: 'rgba(255, 19, 157, 0.5)',
+				borderColor: 'rgb(255, 19, 157)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}, {
+				label: 'children logs',
+				backgroundColor: 'rgba(255, 19, 157, 0.5)',
+				borderColor: 'rgb(255, 19, 157)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}, {
+				label: "Transport Agent's Logs",
+				backgroundColor: 'rgba(255, 19, 157, 0.5)',
+				borderColor: 'rgb(255, 19, 157)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}, {
+				label: 'Parents Logs',
+				backgroundColor: 'rgba(255, 19, 157, 0.5)',
+				borderColor: 'rgb(255, 19, 157)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}, {
+				label: 'Guardians Logs',
+				backgroundColor: 'rgba(255, 19, 157, 0.5)',
+				borderColor: 'rgb(255, 19, 157)',
+				hoverBorderWidth: 3,
+				data: [45, 75, 70, 80, 20, 30, 90],
+			}]
+		};
+
+		var traffic = document.getElementById('traffic');
+		var chart = new Chart(traffic, {
+			type: 'line',
+			data: data,
+			options: {
+				plugins: {
+					title: {
+						display: true,
+						text: 'ChildPickup Stakeholder Track',
+						padding: 15
+					}
+				}
+			}
+		});
+</script>
+{% endblock %}

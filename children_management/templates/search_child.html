@@ -1,0 +1,25 @@
+<!-- search_child.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="heading">
+        <h1>Search Child</h1>
+    </div>
+
+    {% if error_message %}
+    <div class="error-message">
+        {{ error_message }}
+    </div>
+    {% endif %}
+
+    <form method="post" class="search-form">
+        {% csrf_token %}
+        <label for="unique_number">Enter Unique Number:</label>
+        <input type="text" id="unique_number" name="unique_number" required>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="heading">
+    <h1>Register New Parent</h1>
+</div>
+
+<form id="registration_form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="input-fields">
+        <label for="">First Name</label>
+        <div>
+            <input
+            type="text"
+            class="form-control"
+            placeholder="First Name"
+            name="first_name"
+            id="first_name"
+            minlength="3"
+            required
+            />
+        </div>
+    </div>
+
+    <div class="input-fields">
+        <label for="">Last Name</label>
+        <div>
+            <input
+            type="text"
+            class="form-control"
+            placeholder="Last Name"
+            name="last_name"
+            id="last_name"
+            minlength="3"
+            required
+            />
+        </div>
+    </div>
+
+    <div class="input-fields">
+        <label for="">Gender</label>
+        <div>
+            <select id="gender" name="gender" class="form-control">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="input-fields">
+        <label for="">Phone Number</label>
+        <div>
+            <input
+            type="text"
+            class="form-control"
+            placeholder="Phone Number"
+            name="phone_number"
+            id="phone_number"
+            minlength="10"
+            required
+            />
+        </div>
+    </div>
+
+    <div class="input-fields">
+        <label for="">Passport</label>
+        <div>
+            <input type="file" id="passport" name="passport">
+        </div>
+    </div>
+
+    <div class="input-fields">
+        <label for="">Address</label>
+        <div>
+            <input
+            type="text"
+            class="form-control"
+            placeholder="Address"
+            name="address"
+            id="address"
+            minlength="3"
+            required
+            />
+        </div>
+    </div>
+
+    <!-- Webcam display -->
+    <video id="video" style="width: 100%; max-width: 400px; margin-bottom: 10px;" autoplay></video><br>
+    <canvas id="canvas" style="display: none;"></canvas> <!-- Add a canvas element to capture the image -->
+    <img id="captured_image" style="max-width: 400px;"> <!-- Add an img tag to display the captured image -->
+
+    <!-- Replace Face Image input with Capture Face button -->
+    <button type="button" onclick="captureFace()" class="btn btn-primary">Capture Face</button><br><br>
+
+    <div class="input-fields">
+        <label for="">Child's Unique Number</label>
+        <div>
+            <input
+            type="text"
+            class="form-control"
+            placeholder="Unique Number"
+            name="childs_unique_number"
+            id="childs_unique_number"
+            required
+            />
+        </div>
+    </div>
+
+    <input type="submit" value="Register Parent" class="btn btn-primary">
+</form>
+
+<script>
+    function captureFace() {
+        // Get references to video, canvas, and capture button
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const capturedImage = document.getElementById('captured_image');
+
+        // Draw the current frame from the video onto the canvas
+        const context = canvas.getContext('2d');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Convert the canvas content to a data URL representing a PNG image
+        const imageData = canvas.toDataURL('image/png');
+
+        // Set the captured image source to display
+        capturedImage.src = imageData;
+
+        // Create a hidden input element to store the captured image data
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'face_image';
+        input.value = imageData;
+
+        // Append the hidden input element to the form
+        document.getElementById('registration_form').appendChild(input);
+    }
+
+    // Request access to the user's webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (stream) {
+            video.srcObject = stream;
+        })
+        .catch(function (error) {
+            console.error('Error accessing webcam:', error);
+        });
+</script>
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %} {% block title %}Login{% endblock %} 
+{% block content%}
+
+<main class="login-form-container">
+  <div class="login-form">
+    <div class="login-welcome">
+      {% load static %}
+      <a href="{%url 'dashboard' %}" class=""
+        ><img
+          src="{% static 'img/childpickup_logo2.png' %}"
+          width="80px"
+          alt="ChildPickUp"
+      /></a>
+      <p>Welcome</p>
+    </div>
+
+    <form action="{% url 'login' %}" method="POST">
+      {% csrf_token %}
+      <div class="input-fields">
+        <label for="">Username</label>
+        <div>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Username"
+            name="username"
+            minlength="3"
+            required
+          />
+        </div>
+      </div>
+      <div class="input-fields">
+        <label for="">Password</label>
+        <div>
+          <input
+            type="password"
+            class="form-control"
+            placeholder="Password"
+            name="password"
+            minlength="8"
+            required
+          />
+        </div>
+      </div>
+      <input type="submit" value="Login" class="login-btn" />
+    </form>
+    <p>
+    </p>
+  </div>
+</main>
+
+{% endblock %}

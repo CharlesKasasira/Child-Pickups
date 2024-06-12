@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Registered Guardians{% endblock %}
+
+{% block content %}
+    <style>
+        /* CSS for adjusting image sizes */
+        .national_idcard-image, .face-image {
+            max-width: 100px;
+            height: auto;
+        }
+    </style>
+
+    
+    <div class="heading">
+        <h1>Registered Guardians</h1>
+        <a href="{% url 'register_guardian' %}" class="btn btn-primary">Register Guardian</a>
+    </div>
+
+    {% if guardians|length > 0 %}
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>Gender</th>
+                <th>Child's Unique Number</th>
+                <th>national_idcard</th>
+                <th>Face Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for guardian in guardians %}
+            <tr>
+                <td>{{ guardian.first_name }}</td>
+                <td>{{ guardian.last_name }}</td>
+                <td>{{ guardian.phone_number }}</td>
+                <td>{{ guardian.address }}</td>
+                <td>{{ guardian.gender }}</td>
+                <td>{{ guardian.childs_unique_number }}</td>
+                <td>
+                    {% if guardian.national_idcard %}
+                        <img class="national_idcard-image" src="{{ guardian.national_idcard.url }}" alt="national_idcard">
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if guardian.face_image %}
+                        <img class="face-image" src="{{ guardian.face_image.url }}" alt="Face Image">
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No guardians available.</p>
+    {% endif %}
+{% endblock %}

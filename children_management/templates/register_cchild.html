@@ -1,0 +1,173 @@
+{% extends 'children_management/base.html' %}
+
+{% block title %}Register Child{% endblock %}
+
+{% block content %}
+<h1>Register Child</h1>
+<form id="registration_form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
+    <div class="input-fields">
+        <label for="first_name">First Name</label>
+        <div>
+            <input
+            type="text"
+            class="form-control"
+            placeholder="First Name"
+            name="first_name"
+            id="first_name"
+            minlength="3"
+            required
+            />
+        </div>
+    </div>
+
+    <div class="input-fields">
+        <label for="last_name">Last Name</label>
+        <div>
+            <input
+            type="text"
+            class="form-control"
+            placeholder="Last Name"
+            name="last_name"
+            id="last_name"
+            minlength="3"
+            required
+            />
+        </div>
+    </div>
+
+    <div class="input-fields">
+        <label for="gender">Gender</label>
+        <div>
+            <select id="gender" name="gender" class="form-control">
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="input-fields">
+        <label for="birth_certificate">Birth Certificate</label>
+        <div>
+            <input type="file" id="birth_certificate" name="birth_certificate" class="form-control" required>
+        </div>
+    </div>
+
+    <div class="input-fields">
+        <label for="childs_unique_number">Child's Unique Number</label>
+        <div>
+            <input
+            type="text"
+            class="form-control"
+            placeholder="Unique Number"
+            name="childs_unique_number"
+            id="childs_unique_number"
+            minlength="3"
+            required
+            />
+        </div>
+    </div>
+    
+    <div class="input-fields">
+        <label for="classroom_number">Classroom Number</label>
+        <div>
+            <input
+            type="text"
+            class="form-control"
+            placeholder="Classroom Number"
+            name="classroom_number"
+            id="classroom_number"
+            required
+            />
+        </div>
+    </div>
+
+    <div class="input-fields">
+        <label for="block_name">Block Name</label>
+        <div>
+            <input
+            type="text"
+            class="form-control"
+            placeholder="Block"
+            name="block_name"
+            id="block_name"
+            required
+            />
+        </div>
+    </div>
+    
+    <div>
+        <label for="child_id">Child ID:</label>
+        <input type="text" id="child_id" name="child_id" value="{{ child_id }}" readonly>
+    </div>
+
+    <button type="button" id="capture-face-image">Capture Face for Storage</button>
+    <input type="hidden" name="face_image" id="face_image">
+    <br><br>
+    <button type="button" id="capture-face-train">Capture Face for Training</button>
+    <br><br>
+    <button type="submit">Submit</button>
+</form>
+<div id="camera"></div>
+<canvas id="canvas" style="display:none;"></canvas>
+
+<script>
+document.getElementById('capture-face-image').addEventListener('click', function() {
+    captureFace('face_image');
+});
+
+document.getElementById('capture-face-train').addEventListener('click', function() {
+    const childId = document.getElementById('child_id').value;
+    if (childId) {
+        captureAndTrainFace(childId);
+    } else {
+        alert('Please submit the form to get a valid child ID.');
+    }
+});
+
+function captureFace(inputId) {
+    const video = document.createElement('video');
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const cameraDiv = document.getElementById('camera');
+    cameraDiv.innerHTML = '';
+    cameraDiv.appendChild(video);
+
+    // Set canvas dimensions to match video dimensions
+    video.addEventListener('loadedmetadata', () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+    });
+
+    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+        video.srcObject = stream;
+        video.play();
+
+        video.addEventListener('click', () => {
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/png');
+            document.getElementById(inputId).value = dataUrl;
+            stream.getTracks().forEach(track => track.stop());
+            cameraDiv.innerHTML = 'Captured face image';
+        });
+    }).catch(err => {
+        console.error("Error accessing the camera: ", err);
+    });
+}
+
+function captureAndTrainFace(childId) {
+    fetch(`/capture_and_train/${childId}/`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'Training completed') {
+                alert('Face training completed');
+            } else {
+                alert('Error: ' + data.error);
+            }
+        }).catch(err => {
+            console.error("Error during face training: ", err);
+        });
+}
+</script>
+{% endblock %}

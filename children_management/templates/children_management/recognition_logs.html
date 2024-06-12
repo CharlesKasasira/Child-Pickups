@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Recognition Logs</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Function to get CSRF token from cookie
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            $('.pickup-checkbox').change(function() {
+                const logId = $(this).data('log-id');
+                const checkbox = $(this);
+
+                // Get the CSRF token from the cookie
+                const csrftoken = getCookie('csrftoken');
+
+                // Include the CSRF token in the headers of the POST request
+                $.ajax({
+                    type: 'POST',
+                    url: `/update_pickup_status/${logId}/`,
+                    data: {},
+                    headers: {
+                        'X-CSRFToken': csrftoken
+                    },
+                    success: function(response) {
+                        if (response.child_picked) {
+                            checkbox.next('.pickup-status').text('Child Picked at ' + response.pickup_time);
+                        } else {
+                            checkbox.next('.pickup-status').text('Child Not Yet Picked');
+                        }
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        alert('Error updating status.');
+                    }
+                });
+            });
+        });
+    </script>
+        
+ <style>
+    /* Custom CSS styles */
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #C0C0C0;
+    }
+    
+    h1 {
+        color: #333;
+    }
+    
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    th, td {
+        padding: 8px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+    
+    th {
+        background-color: #f2f2f2;
+    }
+    
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+    
+    .pickup-checkbox {
+        /* Add checkbox styles here */
+    }
+    
+    .pickup-status {
+        font-style: italic;
+        color: #777;
+    }
+</style>
+
+</head>
+<body>
+    <main>
+        <h1>Recognition Logs</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Face Image</th>
+                    <th>Driver Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Address</th>
+                    <th>Child's Unique Number</th>
+                    <th>Recognized Time</th>
+                    <th>Pickup Status</th>
+                    <th>Action</th> <!-- Add this column for the checkbox -->
+                </tr>
+            </thead>
+            <tbody>
+                {% for log in recent_logs %}
+                    <tr>
+                        <td><img src="{{ log.driver.face_image.url }}" alt="Face Image" width="100"></td>
+                        <td>{{ log.driver.first_name }} {{ log.driver.last_name }}</td>
+                        <td>{{ log.driver.email }}</td>
+                        <td>{{ log.driver.phone_number }}</td>
+                        <td>{{ log.driver.address }}</td>
+                        <td>{{ log.driver.childs_unique_number }}</td>
+                        <td>{{ log.recognition_time }}</td>
+                        <td>
+                            <span class="pickup-status">
+                                {% if log.child_picked %}
+                                    Child Picked at {{ log.pickup_time }}
+                                {% else %}
+                                    Child Not Yet Picked
+                                {% endif %}
+                            </span>
+                        </td>
+                        <td> <!-- Add this column for the checkbox -->
+                            <input type="checkbox" class="pickup-checkbox" data-log-id="{{ log.id }}" {% if log.child_picked %}checked{% endif %}>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

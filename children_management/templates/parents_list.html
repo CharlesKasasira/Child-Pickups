@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Registered Parents{% endblock %}
+
+{% block content %}
+    <style>
+        /* CSS for adjusting image sizes */
+        .passport-image, .face-image {
+            max-width: 100px;
+            height: auto;
+        }
+    </style>
+
+
+    <div class="heading">
+        <h1>Registered Parents</h1>
+        <a href="{% url 'register_parent' %}" class="btn btn-primary">Register Parent</a>
+    </div>
+
+    {% if parents|length > 0 %}
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+                <th>Gender</th>
+                <th>Child's Unique Number</th>
+                <th>Passport</th>
+                <th>Face Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for parent in parents %}
+            <tr>
+                <td>{{ parent.first_name }}</td>
+                <td>{{ parent.last_name }}</td>
+                <td>{{ parent.phone_number }}</td>
+                <td>{{ parent.address }}</td>
+                <td>{{ parent.gender }}</td>
+                <td>{{ parent.childs_unique_number }}</td>
+                <td>
+                    {% if parent.passport %}
+                        <img class="passport-image" src="{{ parent.passport.url }}" alt="Passport">
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if parent.face_image %}
+                        <img class="face-image" src="{{ parent.face_image.url }}" alt="Face Image">
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No parents available.</p>
+    {% endif %}
+{% endblock %}
