@@ -1,5 +1,5 @@
 
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404,redirect
 from django.http import HttpResponse, HttpResponseRedirect
 import os
 from .models import Parent
@@ -15,25 +15,7 @@ import base64
 from io import BytesIO
 from django.conf import settings
 from django.contrib import messages
-#import africastalking
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout, login
-from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Child
 
-'''username = "childpickup"    # use 'sandbox' for development in the test environment
-api_key = ""      # use your sandbox app API key for development in the test environment
-africastalking.initialize(username, api_key)
-
-sms = africastalking.SMS'''
-
-@login_required(login_url='login')
-'''def sendSMS(request):
-    response = sms.send("Hello Message!", ["+256750118523"])
-    print(response)'''
-
-@login_required(login_url='login')
 def main_dashboard(request):
     children = Child.objects.all()
     parents = Parent.objects.all()
@@ -289,27 +271,41 @@ def guardians_list(request):
     }
     return render(request, 'guardians_list.html', context)
 
-
-def login_view(request):
-     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+def edit_driver(request, pk):
+    driver = get_object_or_404(Driver, pk=pk)
+    if request.method == 'POST':
+        form = DriverForm(request.POST, request.FILES, instance=driver)
         if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            messages.success(request, "Successfully logged in")
-            return HttpResponseRedirect('/')
+            form.save()
+            messages.success(request, 'Driver information updated successfully.')
+            return redirect('drivers_list')
         else:
-            return HttpResponseRedirect('/login')
+            messages.error(request, 'Failed to update driver information. Please check the provided data.')
+    else:
+        form = DriverForm(instance=driver)
+    return render(request, 'edit_driver.html', {'form': form, 'driver': driver})
 
-     form = AuthenticationForm()
-     return render(request, 'login.html', {'form': form})
+def delete_driver(request, pk):
+    if request.method == 'POST':
+        driver = get_object_or_404(Driver, pk=pk)
+        driver.delete()
+        messages.success(request, 'Driver deleted successfully.')
+    return redirect('drivers_list')
 
+def edit_guardian(request, pk):
+    guardian = get_object_or_404(Guardian, pk=pk)
+    if request.method == 'POST':
+        form = GuardianForm(request.POST, request.FILES, instance=guardian)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Guardian information updated successfully.')
+            return redirect('guardians_list')
+        else:
+            messages.error(request, 'Failed to update guardian information. Please check the provided data.')
+    else:
+        form = GuardianForm(instance=guardian)
+    return render(request, 'edit_guardian.html', {'form': form, 'guardian': guardian})
 
-@login_required(login_url='login')
-def logout_user(request):
-    logout(request)
-    messages.success(request, "Successfully logged out")
-    return HttpResponseRedirect('/')
 def delete_guardian(request, pk):
     if request.method == 'POST':
         guardian = get_object_or_404(Guardian, pk=pk)
