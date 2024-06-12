@@ -15,23 +15,23 @@ import base64
 from io import BytesIO
 from django.conf import settings
 from django.contrib import messages
-import africastalking
+#import africastalking
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Child
 
-username = "childpickup"    # use 'sandbox' for development in the test environment
+'''username = "childpickup"    # use 'sandbox' for development in the test environment
 api_key = ""      # use your sandbox app API key for development in the test environment
 africastalking.initialize(username, api_key)
 
-sms = africastalking.SMS
+sms = africastalking.SMS'''
 
 @login_required(login_url='login')
-def sendSMS(request):
+'''def sendSMS(request):
     response = sms.send("Hello Message!", ["+256750118523"])
-    print(response)
+    print(response)'''
 
 @login_required(login_url='login')
 def main_dashboard(request):
