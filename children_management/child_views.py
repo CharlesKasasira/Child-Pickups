@@ -66,7 +66,7 @@ def register_child(request):
 
 @login_required(login_url='login')
 def capture_and_train(request, child_id):
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     if not cap.isOpened():
         return JsonResponse({"error": "Could not open video device"})
 

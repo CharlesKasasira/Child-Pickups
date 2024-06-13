@@ -1,8 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
+
+{% block content %}
 <head>
-    <meta charset="UTF-8">
-    <title>Children Logs</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function() {
@@ -49,36 +48,6 @@
     </script>
 
     <style>
-        /* Custom CSS styles */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #C0C0C0;
-        }
-        
-        h1 {
-            color: #333;
-            
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-        
-        th {
-            background-color: #f2f2f2;
-        }
-        
-        tr:hover {
-            background-color: #f5f5f5;
-        }
-        
         .pickup-checkbox {
             /* Add checkbox styles here */
         }
@@ -89,10 +58,12 @@
         }
     </style>
 </head>
-<body>
-    <main>
-        <h1>Children Logs</h1>
-        <table border="1">
+
+
+        <div class="heading">
+            <h1>Children Logs</h1>
+        </div>
+        <table>
             <thead>
                 <tr>
                     <th>Face Image</th>
@@ -140,6 +111,4 @@
                 {% endfor %}
             </tbody>
         </table>
-    </main>
-</body>
-</html>
+{% endblock %}

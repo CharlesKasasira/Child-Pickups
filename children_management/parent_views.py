@@ -265,5 +265,6 @@ def update_pickup_status(request, log_id):
 
 def parents_list(request):
     parents = Parent.objects.all()
+    print(parents)
     context = {"section": "parents_list", 'parents': parents}
     return render(request, 'parents_list.html', context)

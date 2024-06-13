@@ -19,4 +19,4 @@ class DriverForm(forms.ModelForm):
 class ChildForm(forms.ModelForm):
     class Meta:
         model = Child
-        fields = ['first_name', 'last_name', 'birth_certificate', 'childs_unique_number', 'classroom_number', 'block_name', 'parent', 'guardian', 'driver','gender']
+        fields = ['first_name', 'last_name', 'birth_certificate', 'childs_unique_number', 'face_image', 'classroom_number', 'block_name', 'parent', 'guardian', 'driver','gender']
